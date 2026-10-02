@@ -1,0 +1,9 @@
+[
+  { "name": "spawn", "p": [43.5, 0, 81.5], "yaw": 0, "pitch": -0.1 },
+  { "name": "aerial_s", "free": [[110, 120, 230], [110, 0, 50]], "fov": 55 },
+  { "name": "aerial_top", "free": [[110, 420, 46], [110, 0, 45.9]], "fov": 40, "wait": 3000 },
+  { "name": "lobby", "p": [43, 0, 60], "yaw": 0, "fp": true },
+  { "name": "concourse8", "p": [127, 0, 15], "yaw": 1.57, "fp": true },
+  { "name": "hall700", "p": [208, 0, 40], "yaw": 0, "fp": true },
+  { "name": "hall800", "p": [208, 4.27, 40], "yaw": 0, "fp": true }
+]
