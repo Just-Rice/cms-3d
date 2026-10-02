@@ -1263,6 +1263,8 @@ window.__game = {
   sat,
   sunDir,
   levelH: LEVEL_H,
+  get spawn() { return ext.spawn; },
+  get ext() { return ext; },
   scene,
   camera,
   get balls() { return balls; },

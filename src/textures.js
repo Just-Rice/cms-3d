@@ -672,10 +672,10 @@ export class LabelAtlas {
     const i = this.n++;
     const cx = (i % this.cols) * this.cw, cy = Math.floor(i / this.cols) * this.ch;
     const g = this.g;
-    const bg = style === 'big' ? '#15306e' : style === 'stair' ? '#2d3b55' : style === 'exit' ? '#b3261e' : '#1f3f8f';
+    const bg = style === 'big' ? '#8f1a22' : style === 'stair' ? '#2e2a2a' : style === 'exit' ? '#b3261e' : '#2b2727';
     g.fillStyle = bg;
     g.fillRect(cx, cy, this.cw, this.ch);
-    g.strokeStyle = style === 'exit' ? '#ffffff' : '#d5dde8';
+    g.strokeStyle = style === 'exit' ? '#ffffff' : '#e8dcd8';
     g.lineWidth = 4;
     g.strokeRect(cx + 4, cy + 4, this.cw - 8, this.ch - 8);
     g.fillStyle = '#ffffff';

@@ -430,7 +430,7 @@ export function buildFurniture(scene, world, info, T, M) {
           fbox(f, u - 0.25, u + 0.25, v - 0.1, v + 0.1, y + 0.75, y + 1.05, C('#222'));
           place('chair', f, u, v + 0.75, y, 0, '#3c3c3c');
         }
-        fbox(f, f.W - 0.6, f.W - 0.1, f.D - 1.6, f.D - 0.2, y, y + 1.35, C('#8f959b'), 'paint', true);
+        if (!nearDoor(rm, ...f.at(f.W - 0.35, f.D - 0.9), 1.6)) fbox(f, f.W - 0.6, f.W - 0.1, f.D - 1.6, f.D - 0.2, y, y + 1.35, C('#8f959b'), 'paint', true);
         break;
       }
       case 'media': {

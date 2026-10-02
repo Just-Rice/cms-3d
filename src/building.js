@@ -331,7 +331,7 @@ export function buildBuilding(scene, world, T, M) {
   }
 
   // door leaves (swung open into the room) + signs
-  const doorCol = { class: '#a8743f', lab: '#a8743f', office: '#8a6a45', default: '#2a55b8' };
+  const doorCol = { class: '#a8743f', lab: '#a8743f', music: '#a8743f', office: '#8a6a45', default: '#6d2a2e' };
   for (const rm of rooms) {
     if (rm.type === 'stair') continue;
     const base = rm.level === 0 ? 0 : LEVEL_H;
