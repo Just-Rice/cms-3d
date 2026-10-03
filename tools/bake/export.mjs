@@ -24,7 +24,7 @@ const url = `http://127.0.0.1:${server.address().port}/index.html`;
 const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 const page = await browser.newPage({ viewport: { width: 640, height: 400 } });
 // keep the export independent of any existing bake and of saved settings
-await page.addInitScript(() => localStorage.setItem('wwpn3d:quality', '"low"'));
+await page.addInitScript(() => localStorage.setItem('cms3d:quality', '"low"'));
 await page.route('**/lightmaps/**', (r) => r.fulfill({ status: 404, body: '' }));
 if (process.env.THREE_DIR) {
   await page.route('https://cdn.jsdelivr.net/npm/three@0.169.0/**', (r) => {
@@ -33,6 +33,7 @@ if (process.env.THREE_DIR) {
   });
 }
 page.on('pageerror', (e) => console.error('page error:', e.message));
+await page.route('https://fonts.googleapis.com/**', (r) => r.fulfill({ status: 200, contentType: 'text/css', body: '' }));
 await page.goto(url);
 await page.waitForFunction(() => !document.querySelector('#go').disabled, null, { timeout: 300000 });
 const res = await page.evaluate(`(${fs.readFileSync(path.join(root, 'tools/bake/export-scene.js'), 'utf8')})()`);

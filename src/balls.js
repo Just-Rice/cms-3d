@@ -1,5 +1,5 @@
 // Loose balls you can kick around: basketballs in the gyms, soccer balls on the fields, a
-// football in the stadium and a beach ball in the pool. Simple rigid spheres against the
+// football on the field. Simple rigid spheres against the
 // same box colliders the player uses: gravity, bounces, rolling friction, buoyancy.
 import * as THREE from 'three';
 
