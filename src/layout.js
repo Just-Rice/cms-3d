@@ -119,7 +119,6 @@ const F1 = [
   N("Boys' Restroom", [858, 452, 893, 482], 'lav', 'C'), N("Girls' Restroom", [1030, 443, 1065, 480], 'lav', 'C'),
   R('401', [758, 498, 850, 560], 'class', 'C', { doors: ['E'] }), R('405', [850, 498, 893, 547], 'class', 'C', { doors: ['N'] }),
   R('402', [823, 560, 850, 580], 'office', 'C', { doors: ['S'] }), R('403', [850, 560, 872, 580], 'office', 'C', { doors: ['S'] }), R('404', [872, 560, 893, 580], 'office', 'C', { doors: ['S'] }),
-  N('Concourse Room', [923, 502, 1000, 572], 'class', 'C', { doors: ['N:0.5:1.6', 'S:0.5:1.6'] }),
   R('416', [1030, 493, 1083, 577], 'class', 'C', { doors: ['S'] }), R('417', [1083, 493, 1112, 537], 'office', 'C', { doors: ['S'] }), R('418', [1112, 493, 1165, 577], 'class', 'C', { doors: ['S'] }),
   // ---------------- 600s
   R('611', [745, 582, 840, 667], 'music', 'C', { doors: ['E'] }), R('612', [745, 667, 840, 753], 'music', 'C', { doors: ['E'] }),
@@ -133,7 +132,6 @@ const F1 = [
   // ---------------- 200s and the 7th Grade Concourse
   R('201', [753, 755, 847, 838], 'class', 'C', { doors: ['N:0.2'] }), R('202', [812, 755, 847, 788], 'office', 'C', { doors: ['N'] }),
   R('203', [847, 755, 868, 780], 'office', 'C', { doors: ['N'] }), R('204', [868, 755, 892, 790], 'office', 'C', { doors: ['N'] }), R('206', [847, 790, 892, 838], 'class', 'C', { doors: ['S'] }),
-  N('Concourse Room', [922, 762, 1000, 830], 'class', 'C', { doors: ['N:0.5:1.6', 'S:0.5:1.6'] }),
   R('216', [1030, 755, 1085, 838], 'class', 'C', { doors: ['N'] }), R('217', [1085, 800, 1112, 838], 'office', 'C', { doors: ['N'] }), R('218', [1112, 755, 1165, 838], 'class', 'C', { doors: ['N'] }),
   R('207', [788, 838, 855, 887], 'class', 'C', { doors: ['E'] }), R('208', [783, 887, 855, 937], 'class', 'C', { doors: ['N:0.85'] }), N("Boys' Restroom", [855, 853, 892, 887], 'lav', 'C'),
   R('209', [855, 895, 908, 957], 'class', 'C'), R('210', [908, 895, 960, 957], 'class', 'C'), R('211', [960, 895, 988, 957], 'office', 'C', { doors: ['N'] }),
@@ -227,7 +225,7 @@ const HALLS1 = [
   H([580, 753, 597, 877], 'O'), H([542, 858, 562, 912], 'O'), H([580, 857, 735, 872], 'O'), H([590, 872, 607, 962], 'O'),
   H([580, 878, 590, 912], 'O'), H([735, 753, 753, 857], 'O'), H([607, 893, 637, 937], 'O'),
   // 400s, 8th Grade Concourse, 600s, 200s, 7th Grade Concourse
-  H([858, 433, 1065, 502], 'C'), H([1083, 537, 1112, 577], 'C'), H([1085, 755, 1112, 800], 'C'), H([858, 482, 893, 498], 'C'), H([893, 502, 923, 577], 'C'), H([1000, 502, 1030, 577], 'C'),
+  H([858, 433, 1065, 502], 'C'), H([893, 502, 1030, 577], 'C'), H([892, 755, 1030, 838], 'C'), H([1083, 537, 1112, 577], 'C'), H([1085, 755, 1112, 800], 'C'), H([858, 482, 893, 498], 'C'), H([893, 502, 923, 577], 'C'), H([1000, 502, 1030, 577], 'C'),
   H([740, 577, 1188, 600], 'C'), H([840, 600, 857, 755], 'C'), H([1000, 600, 1030, 755], 'C'), H([857, 690, 1000, 693], 'C'),
   H([1030, 643, 1062, 693], 'C'), H([1062, 597, 1132, 615], 'C'), H([1132, 643, 1165, 683], 'C'), H([1062, 715, 1132, 733], 'C'),
   H([735, 733, 1190, 755], 'C'), H([892, 755, 922, 895], 'C'), H([1000, 755, 1030, 895], 'C'), H([892, 830, 1030, 895], 'C'),
@@ -376,6 +374,15 @@ for (const rm of rooms2) rm.doors = autoDoors(rm, 1);
 
 export const ROOMS = [rooms1, rooms2];
 export const HALLS = [halls1.map((h) => h.r), halls2.map((h) => h.r)];
+
+// The dashed X boxes in the 7th and 8th Grade Concourses: three short passages into each
+// concourse, made by banks of tall, very thin lockers that stop well below the ceiling. The
+// center passage is the wide one and the two sides are narrow (about 1 : 2.5 : 1, like the
+// stripes of the Canadian flag), as remembered from the school.
+export const LOCKER_PASSAGES = [
+  { xs: [893, 923, 1000, 1030], y: [505, 570] },
+  { xs: [892, 922, 1000, 1030], y: [765, 828] },
+];
 
 // Courtyards: open to the sky, outside every block
 export const COURTYARDS = [[1190, 817, 1462, 910], [1012, 936, 1168, 1002]];

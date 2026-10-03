@@ -1,14 +1,5 @@
 [
-  { "name": "front", "free": [[50, 1.6, 104], [49, 4, 70]], "fov": 60 },
-  { "name": "gym_sw", "free": [[-24, 1.6, 122], [14, 4, 92]], "fov": 55 },
-  { "name": "east700", "free": [[250, 2, 40], [210, 6, 40]], "fov": 60 },
-  { "name": "north", "free": [[80, 25, -60], [80, 0, 10]], "fov": 55 },
-  { "name": "annex", "free": [[205, 10, -30], [175, 3, -5]], "fov": 55 },
-  { "name": "court", "free": [[175, 1.6, 70], [195, 3, 55]], "fov": 65 },
-  { "name": "commons", "p": [55, 0, 40], "yaw": 1.57, "fp": true },
-  { "name": "aud", "p": [62, 0, 46], "yaw": -1.57, "fp": true, "pitch": 0.05 },
-  { "name": "gym", "p": [14, 0, 96], "yaw": 0, "fp": true, "pitch": 0.1 },
-  { "name": "media", "p": [128, 0, 92], "yaw": 0, "fp": true },
-  { "name": "classroom", "p": [127, 0, 3], "yaw": 3.14, "fp": true },
-  { "name": "stairs", "p": [210, 0, 66], "yaw": 3.14, "fp": false }
+  { "name": "c8", "p": [113, 0, 22.5], "yaw": 3.14, "fp": true, "pitch": -0.05 },
+  { "name": "c7", "p": [120, 0, 70], "yaw": 0, "fp": true, "pitch": -0.05 },
+  { "name": "c8_aerial", "free": [[128, 9, 34], [128, 0, 21]], "fov": 60 }
 ]

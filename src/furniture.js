@@ -1,7 +1,7 @@
 // Room furnishings: classroom desks, lab benches, theatre seats, gym courts + bleachers,
 // cafeteria tables, library stacks, lockers along the hallways, etc.
 import * as THREE from 'three';
-import { LEVEL_H, THEATRE, wx } from './layout.js';
+import { LEVEL_H, THEATRE, LOCKER_PASSAGES, wx, wz } from './layout.js';
 import { Batches, GeoBuilder, hexToRGB, inRect, WHITE } from './geo.js';
 import { rng, textTexture } from './textures.js';
 
@@ -619,6 +619,23 @@ export function buildFurniture(scene, world, info, T, M) {
       }
       if (runStart !== null) flush(runStart, b - 0.45);
     }
+  }
+
+  // ---- locker passages into the concourses: thin locker banks, about 2 m tall. The outer
+  // banks line the room walls; the two inner ones are freestanding and double-sided.
+  for (const lp of LOCKER_PASSAGES) {
+    const z0 = wz(lp.y[0]), z1 = wz(lp.y[1]);
+    lp.xs.forEach((px, i) => {
+      const x = wx(px);
+      const sides = i === 0 ? [1] : i === lp.xs.length - 1 ? [-1] : [-1, 1];
+      for (const s of sides) {
+        const off = i === 0 || i === lp.xs.length - 1 ? 0.31 : 0.3;
+        for (let z = z0 + 0.2; z < z1 - 0.15; z += 0.32) props.add('locker', x + s * off, 0, z, s > 0 ? Math.PI / 2 : -Math.PI / 2, i % 2 ? '#b3202a' : '#3a3a3a', [1, 1, 0.55]);
+      }
+      const d0 = i === 0 ? 0.1 : -0.42, d1 = i === lp.xs.length - 1 ? -0.1 : 0.42;
+      world.add(x + Math.min(d0, d1), 0, z0, x + Math.max(d0, d1), 2.0, z1, 10);
+      if (sides.length === 2) paint.box(x - 0.04, 0, z0, x + 0.04, 1.95, z1, C('#5a5a5a'));
+    });
   }
 
   // ---- gyms
