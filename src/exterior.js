@@ -440,7 +440,7 @@ export function buildExterior(scene, world, info, T, M) {
   }
   // the double row of trees along the south side of Grovers Mill Road, and clusters
   for (let qx = 1300; qx < 2700; qx += 30) for (const qy of [2425, 2470]) { const [x, z] = sat(qx + R() * 12, qy + R() * 10); tryTree(x, z, 0.9 + R() * 0.3); }
-  const clusters = [[1100, 2290, 10], [1500, 2290, 6], [2500, 2150, 14], [2620, 2050, 10], [2380, 1580, 3], [1560, 1640, 3], [2150, 2470, 6], [3000, 2100, 12], [1180, 1560, 8], [2700, 2250, 10]];
+  const clusters = [[1100, 2290, 10], [2500, 2150, 14], [2620, 2050, 10], [2380, 1580, 3], [1560, 1640, 3], [2150, 2470, 6], [3000, 2100, 12], [1180, 1560, 8], [2700, 2250, 10]];
   for (const [qx, qy, n] of clusters) for (let i = 0; i < n; i++) { const [x, z] = sat(qx + (R() - 0.5) * 140, qy + (R() - 0.5) * 80); tryTree(x, z, 0.8 + R() * 0.4); }
   {
     const trunk = new THREE.CylinderGeometry(0.18, 0.3, 3.2, 7);

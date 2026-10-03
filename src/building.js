@@ -553,16 +553,20 @@ export function buildBuilding(scene, world, T, M) {
       }
     }
     // red brick bands (three courses) on the buff block, as in the photos
-    const top = b.fascia ? hIn - 1.45 : hIn - 0.25;
+    const fH = b.fasciaH || 0.9, pH = b.panelH || 0.9; // bronze fascia and gray panel band heights
+    const top = b.fascia ? hIn + 0.35 - fH - pH : hIn - 0.25;
     const bands = [0.3, 0.75, 1.2, top - 0.45];
     if (b.levels === 2) bands.push(LEVEL_H + 0.3, LEVEL_H - 0.1);
     for (const yb of bands) if (yb > hOut + 0.05 && yb + 0.2 < top + 0.01) segBox(B.get('redband'), axis, c, p0, q0, out * SK, out * (SK + 0.012), yb, yb + 0.2, WHITE, faceOut(axis, out, 'yY'));
     if (b.fascia) {
       // metal panels: a gray band, then the bronze fascia that projects past the wall
-      segBox(B.get('satin'), axis, c, p0, q0, out * SK, out * (SK + 0.05), hIn - 1.45, hIn - 0.55, panelCol, faceOut(axis, out, 'y'));
-      for (let u = p0 + 1.5; u < q0 - 0.3; u += 1.5) segBox(B.get('paint'), axis, c, u - 0.01, u + 0.01, out * (SK + 0.05), out * (SK + 0.055), hIn - 1.45, hIn - 0.55, panelJoint, faceOut(axis, out));
-      segBox(B.get('satin'), axis, c, p0 - 0.3, q0 + 0.3, -out * 0.05, out * (SK + 0.3), hIn - 0.55, hIn + 0.35, bronzeCol, faceOut(axis, out, 'yYxXzZ'.replace(faceOut(axis, -out), '')));
-      for (let u = p0 + 1.2; u < q0 - 0.3; u += 1.2) segBox(B.get('paint'), axis, c, u - 0.01, u + 0.01, out * (SK + 0.3), out * (SK + 0.305), hIn - 0.55, hIn + 0.35, bronzeJoint, faceOut(axis, out));
+      const fb0 = hIn + 0.35 - fH;
+      segBox(B.get('satin'), axis, c, p0, q0, out * SK, out * (SK + 0.05), top, fb0, panelCol, faceOut(axis, out, 'y'));
+      for (let u = p0 + 1.5; u < q0 - 0.3; u += 1.5) segBox(B.get('paint'), axis, c, u - 0.01, u + 0.01, out * (SK + 0.05), out * (SK + 0.055), top, fb0, panelJoint, faceOut(axis, out));
+      segBox(B.get('satin'), axis, c, p0 - 0.3, q0 + 0.3, -out * 0.05, out * (SK + 0.3), fb0, hIn + 0.35, bronzeCol, faceOut(axis, out, 'yYxXzZ'.replace(faceOut(axis, -out), '')));
+      for (let u = p0 + 1.2; u < q0 - 0.3; u += 1.2) segBox(B.get('paint'), axis, c, u - 0.01, u + 0.01, out * (SK + 0.3), out * (SK + 0.305), fb0, hIn + 0.35, bronzeJoint, faceOut(axis, out));
+      // cast-stone band (the gym, at about 3.9 m in the architect's photo)
+      if (b.id === 'gym') segBox(B.get('paint'), axis, c, p0 - 0.02, q0 + 0.02, out * SK, out * (SK + 0.05), 3.8, 3.98, hexToRGB('#e4ddcf'), faceOut(axis, out, 'yY'));
     } else segBox(B.get('paint'), axis, c, p0 - 0.03, q0 + 0.03, -out * 0.03, out * (SK + 0.04), hIn - 0.08, hIn, copeCol, faceOut(axis, out, 'y'));
     if (b.mansard) mansard(run, p0, q0);
   }
@@ -607,7 +611,40 @@ export function buildBuilding(scene, world, T, M) {
     const ic = c - out * (d - o);
     segBox(B.get('shingle'), axis, ic, iA, iB, -0.02, 0.02, b.roof, y1, WHITE, faceOut(axis, -out));
   }
-  // windows: white frames with a mullion between panes, aluminum sill outside,
+  // The gym's tall windows and pilasters, from the architect's photo: four tall windows between
+  // five pilasters on the west face, and a tall window over each of the two south doors (with
+  // a small bronze canopy over the door). Black mullions, translucent panels.
+  {
+    const gym = rooms.find((r) => r.name === 'Gym' && r.level === 0);
+    const [gx0, gz0, , gz1] = gym.R;
+    const tall = (axis, c, out, a, bw, y0, y1, cols, rows) => {
+      B.get('extGlass').vquad(axis, c + out * (SK * 0.6), a, bw, y0, y1, out);
+      for (let k = 0; k <= cols; k++) { const u = a + ((bw - a) * k) / cols; segBox(B.get('satin'), axis, c, u - 0.05, u + 0.05, out * SK * 0.5, out * (SK + 0.03), y0, y1, winCol); }
+      for (let k = 0; k <= rows; k++) { const y = y0 + ((y1 - y0) * k) / rows; segBox(B.get('satin'), axis, c, a, bw, out * SK * 0.5, out * (SK + 0.03), y - 0.05, y + 0.05, winCol); }
+    };
+    const n = 4, pil = 0.75;
+    const span = (gz1 - gz0 - 2) / n;
+    for (let i = 0; i <= n; i++) {
+      const z = gz0 + 1 + i * span;
+      segBox(B.get('facade'), 'x', gx0, z - pil / 2, z + pil / 2, -SK, -(SK + 0.3), 0, 7.3, WHITE, 'xzZ');
+      world.add(gx0 - SK - 0.3, 0, z - pil / 2, gx0 - SK, 7.3, z + pil / 2, 1);
+      if (i < n) tall('x', gx0, -1, z + pil / 2 + 0.9, z + span - pil / 2 - 0.9, 1.0, 6.6, 3, 9);
+    }
+    for (const e of entrances.filter((ee) => ee.name === 'Gym Doors')) {
+      // window over the door and a bronze canopy, measured on the photo
+      const [ww, wy0, wy1] = e.win, [ca, cb] = e.can;
+      tall('z', gz1, 1, e.mid - ww / 2, e.mid + ww / 2, wy0, wy1, 4, 7);
+      B.get('satin').box(e.mid + ca, 2.5, gz1 + SK, e.mid + cb, 2.92, gz1 + SK + 1.4, bronzeCol);
+      world.add(e.mid + ca, 2.5, gz1 + SK, e.mid + cb, 2.92, gz1 + SK + 1.4, 6);
+    }
+    // the school's name in bronze letters on the south face, east of the first door
+    const tex = textTexture([{ text: 'COMMUNITY MIDDLE SCHOOL', size: 0.72, font: 'Futura, "Century Gothic", Arial, sans-serif', weight: '600' }], { w: 2048, h: 120, bg: 'rgba(0,0,0,0)', fg: '#4a3a2e', border: false });
+    const sign = new THREE.Mesh(new THREE.PlaneGeometry(13, (13 * 120) / 2048), new THREE.MeshStandardMaterial({ map: tex, alphaTest: 0.5, roughness: 0.4, metalness: 0.4 }));
+    sign.position.set(gx0 + 15.3, 5.75, gz1 + SK + 0.03);
+    sign.castShadow = true;
+    scene.add(sign);
+  }
+  // windows: dark bronze frames with a mullion between panes, aluminum sill outside,
   // painted stool inside
   for (const w of windows) {
     const { axis, c, out, a, b: bw, y0, y1, n } = w;

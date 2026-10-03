@@ -1118,6 +1118,7 @@ function frame() {
     camera.position.set(...freeCam[0]);
     camera.up.set(...(freeCam[2] || [0, 1, 0]));
     camera.lookAt(...freeCam[1]);
+    if (freeCam[3]) { camera.fov = freeCam[3]; camera.updateProjectionMatrix(); }
     camera.up.set(0, 1, 0);
   }
   balls.update(dt, player);
@@ -1269,7 +1270,7 @@ window.__game = {
   camera,
   get balls() { return balls; },
   get texturesReady() { return texturesReady; },
-  freeCam: (pos, at, up) => { freeCam = pos ? [pos, at, up] : null; },
+  freeCam: (pos, at, up, fov) => { freeCam = pos ? [pos, at, up, fov] : null; },
   setQuality: (q) => { quality = q; applyQuality(); },
   start: () => $('#go').click(),
   renderer,
