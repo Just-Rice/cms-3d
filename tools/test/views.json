@@ -1,5 +1,12 @@
 [
-  { "name": "c8", "p": [113, 0, 22.5], "yaw": 3.14, "fp": true, "pitch": -0.05 },
-  { "name": "c7", "p": [120, 0, 70], "yaw": 0, "fp": true, "pitch": -0.05 },
-  { "name": "c8_aerial", "free": [[128, 9, 34], [128, 0, 21]], "fov": 60 }
+  { "name": "front", "free": [[50, 1.7, 104], [47, 4, 70]], "fov": 60 },
+  { "name": "lobby", "p": [43, 0, 62], "yaw": 0, "fp": true },
+  { "name": "commons", "p": [55, 0, 40], "yaw": 1.57, "fp": true },
+  { "name": "c7", "p": [120, 0, 70], "yaw": 0, "fp": true },
+  { "name": "hall700", "p": [208, 0, 40], "yaw": 0, "fp": true },
+  { "name": "hall800", "p": [208, 4.27, 40], "yaw": 0, "fp": true },
+  { "name": "classroom", "p": [127, 0, 3], "yaw": 3.14, "fp": true },
+  { "name": "gym", "p": [14, 0, 96], "yaw": 0, "fp": true, "pitch": 0.1 },
+  { "name": "aud", "p": [62, 0, 46], "yaw": -1.57, "fp": true, "pitch": 0.05 },
+  { "name": "media", "p": [140, 0, 96], "yaw": 1.57, "fp": true }
 ]

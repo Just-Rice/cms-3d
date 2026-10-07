@@ -59,21 +59,37 @@ def oidn(img, idm, tmp):
     sc.render.resolution_x = sc.render.resolution_y = size
     sc.render.resolution_percentage = 100
     sc.render.engine = 'BLENDER_WORKBENCH'
-    sc.use_nodes = True
-    nt = sc.node_tree
-    for n in list(nt.nodes):
-        nt.nodes.remove(n)
+    if hasattr(sc, 'compositing_node_group'):
+        # Blender 5: the compositor is a node group with a group output instead of a Composite node
+        nt = bpy.data.node_groups.new('denoise', 'CompositorNodeTree')
+        nt.interface.new_socket('Image', in_out='OUTPUT', socket_type='NodeSocketColor')
+        sc.compositing_node_group = nt
+        out = nt.nodes.new('NodeGroupOutput')
+        sink = out.inputs[0]
+    else:
+        sc.use_nodes = True
+        nt = sc.node_tree
+        for n in list(nt.nodes):
+            nt.nodes.remove(n)
+        sink = nt.nodes.new('CompositorNodeComposite').inputs['Image']
     ni = nt.nodes.new('CompositorNodeImage')
     ni.image = image('light', img)
     na = nt.nodes.new('CompositorNodeImage')
     na.image = image('guide', albedo)
     dn = nt.nodes.new('CompositorNodeDenoise')
-    dn.use_hdr = True
-    dn.prefilter = 'NONE'
-    cp = nt.nodes.new('CompositorNodeComposite')
+    for k, v in (('use_hdr', True), ('prefilter', 'NONE')):
+        if hasattr(dn, k):
+            setattr(dn, k, v)
+        elif k == 'use_hdr' and 'HDR' in dn.inputs:
+            dn.inputs['HDR'].default_value = True
+        elif k == 'prefilter' and 'Prefilter' in dn.inputs:
+            try:
+                dn.inputs['Prefilter'].default_value = 'None'
+            except Exception:
+                pass
     nt.links.new(ni.outputs['Image'], dn.inputs['Image'])
     nt.links.new(na.outputs['Image'], dn.inputs['Albedo'])
-    nt.links.new(dn.outputs['Image'], cp.inputs['Image'])
+    nt.links.new(dn.outputs['Image'], sink)
     cam = bpy.data.objects.new('cam', bpy.data.cameras.new('cam'))
     sc.collection.objects.link(cam)
     sc.camera = cam

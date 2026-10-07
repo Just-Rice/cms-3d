@@ -1270,6 +1270,7 @@ window.__game = {
   camera,
   get balls() { return balls; },
   get texturesReady() { return texturesReady; },
+  get baked() { return baked; },
   freeCam: (pos, at, up, fov) => { freeCam = pos ? [pos, at, up, fov] : null; },
   setQuality: (q) => { quality = q; applyQuality(); },
   start: () => $('#go').click(),
