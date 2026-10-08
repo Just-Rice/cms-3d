@@ -707,7 +707,10 @@ export function buildFurniture(scene, world, info, T, M) {
     const y = 0.04;
     const alongZ = z1 - z0 >= x1 - x0;
     const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
-    const len = main ? 28.6 : 24, wid = main ? 15.2 : 13;
+    // the court and its hoops have to fit inside the room: 84 ft (25.6 m) in the main gym, as
+    // long as fits in the auxiliary gym, with room behind each backboard
+    const span = alongZ ? z1 - z0 : x1 - x0, cross = alongZ ? x1 - x0 : z1 - z0;
+    const len = Math.min(main ? 25.6 : 24, span - 3.6), wid = Math.min(main ? 15.2 : 13, cross - 1.6);
     courtLines(cx, cz, len, wid, y, alongZ);
     const L2 = len / 2 + 1.2;
     if (alongZ) { hoop(cx, cz - L2, 0, 1, true); hoop(cx, cz + L2, 0, -1, true); }

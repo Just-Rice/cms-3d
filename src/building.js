@@ -223,6 +223,31 @@ export function buildBuilding(scene, world, T, M) {
     }
   }
 
+  // The gym's tall windows (from the architect's photo): four on the west face between five
+  // pilasters, and one over each south door. They cut the skin and the inside wall like the
+  // ribbon windows do.
+  const gymWins = [];
+  {
+    const gym = rooms.find((r) => r.name === 'Gym' && r.level === 0);
+    const [gx0, gz0, , gz1] = gym.R;
+    const n = 4, pil = 0.75, span = (gz1 - gz0 - 2) / n;
+    for (let i = 0; i < n; i++) {
+      const z = gz0 + 1 + i * span;
+      gymWins.push({ axis: 'x', c: gx0, out: -1, a: z + pil / 2 + 0.9, b: z + span - pil / 2 - 0.9, y0: 1.0, y1: 6.6, cols: 3, rows: 9 });
+    }
+    for (const e of entrances.filter((ee) => ee.win)) {
+      const [ww, wy0, wy1] = e.win;
+      gymWins.push({ axis: 'z', c: gz1, out: 1, a: e.mid - ww / 2, b: e.mid + ww / 2, y0: wy0, y1: wy1, cols: 4, rows: 7 });
+    }
+    for (const w of gymWins) {
+      const run = runs.find((r) => r.axis === w.axis && Math.abs(r.c - w.c) < 0.05 && r.p <= w.a && r.q >= w.b);
+      if (run) run.openings.push(w);
+      const key = lineKey(w.axis, w.c);
+      if (!windowsByLine[0].has(key)) windowsByLine[0].set(key, []);
+      windowsByLine[0].get(key).push(w);
+    }
+  }
+
   // ------------------------------------------------------------------ interior walls
   const segs = [new Map(), new Map()];
   const group = (level, axis, c) => {
@@ -557,7 +582,12 @@ export function buildBuilding(scene, world, T, M) {
     const top = b.fascia ? hIn + 0.35 - fH - pH : hIn - 0.25;
     const bands = [0.3, 0.75, 1.2, top - 0.45];
     if (b.levels === 2) bands.push(LEVEL_H + 0.3, LEVEL_H - 0.1);
-    for (const yb of bands) if (yb > hOut + 0.05 && yb + 0.2 < top + 0.01) segBox(B.get('redband'), axis, c, p0, q0, out * SK, out * (SK + 0.012), yb, yb + 0.2, WHITE, faceOut(axis, out, 'yY'));
+    // bands stop at doors and windows
+    const bandSpans = (y0, y1) => solidSpans(p0, q0, run.openings.filter((o) => o.y0 < y1 && o.y1 > y0).map((o) => [o.a - 0.02, o.b + 0.02]));
+    for (const yb of bands) {
+      if (!(yb > hOut + 0.05 && yb + 0.2 < top + 0.01)) continue;
+      for (const [s0, s1] of bandSpans(yb, yb + 0.2)) segBox(B.get('redband'), axis, c, s0, s1, out * SK, out * (SK + 0.012), yb, yb + 0.2, WHITE, faceOut(axis, out, 'yY'));
+    }
     if (b.fascia) {
       // metal panels: a gray band, then the bronze fascia that projects past the wall
       const fb0 = hIn + 0.35 - fH;
@@ -566,7 +596,7 @@ export function buildBuilding(scene, world, T, M) {
       segBox(B.get('satin'), axis, c, p0 - 0.3, q0 + 0.3, -out * 0.05, out * (SK + 0.3), fb0, hIn + 0.35, bronzeCol, faceOut(axis, out, 'yYxXzZ'.replace(faceOut(axis, -out), '')));
       for (let u = p0 + 1.2; u < q0 - 0.3; u += 1.2) segBox(B.get('paint'), axis, c, u - 0.01, u + 0.01, out * (SK + 0.3), out * (SK + 0.305), fb0, hIn + 0.35, bronzeJoint, faceOut(axis, out));
       // cast-stone band (the gym, at about 3.9 m in the architect's photo)
-      if (b.id === 'gym') segBox(B.get('paint'), axis, c, p0 - 0.02, q0 + 0.02, out * SK, out * (SK + 0.05), 3.8, 3.98, hexToRGB('#e4ddcf'), faceOut(axis, out, 'yY'));
+      if (b.id === 'gym') for (const [s0, s1] of bandSpans(3.8, 3.98)) segBox(B.get('paint'), axis, c, s0, s1, out * SK, out * (SK + 0.05), 3.8, 3.98, hexToRGB('#e4ddcf'), faceOut(axis, out, 'yY'));
     } else segBox(B.get('paint'), axis, c, p0 - 0.03, q0 + 0.03, -out * 0.03, out * (SK + 0.04), hIn - 0.08, hIn, copeCol, faceOut(axis, out, 'y'));
     if (b.mansard) mansard(run, p0, q0);
   }
@@ -617,23 +647,23 @@ export function buildBuilding(scene, world, T, M) {
   {
     const gym = rooms.find((r) => r.name === 'Gym' && r.level === 0);
     const [gx0, gz0, , gz1] = gym.R;
-    const tall = (axis, c, out, a, bw, y0, y1, cols, rows) => {
+    for (const w of gymWins) {
+      const { axis, c, out, a, b: bw, y0, y1, cols, rows } = w;
       B.get('extGlass').vquad(axis, c + out * (SK * 0.6), a, bw, y0, y1, out);
+      B.get('intGlass').vquad(axis, c + out * (SK * 0.55), a, bw, y0, y1, -out);
+      segCollider(axis, c, a, bw, out * SK * 0.5, out * SK * 0.6, y0, y1, 15);
       for (let k = 0; k <= cols; k++) { const u = a + ((bw - a) * k) / cols; segBox(B.get('satin'), axis, c, u - 0.05, u + 0.05, out * SK * 0.5, out * (SK + 0.03), y0, y1, winCol); }
       for (let k = 0; k <= rows; k++) { const y = y0 + ((y1 - y0) * k) / rows; segBox(B.get('satin'), axis, c, a, bw, out * SK * 0.5, out * (SK + 0.03), y - 0.05, y + 0.05, winCol); }
-    };
+    }
     const n = 4, pil = 0.75;
     const span = (gz1 - gz0 - 2) / n;
     for (let i = 0; i <= n; i++) {
       const z = gz0 + 1 + i * span;
       segBox(B.get('facade'), 'x', gx0, z - pil / 2, z + pil / 2, -SK, -(SK + 0.3), 0, 7.3, WHITE, 'xzZ');
       world.add(gx0 - SK - 0.3, 0, z - pil / 2, gx0 - SK, 7.3, z + pil / 2, 1);
-      if (i < n) tall('x', gx0, -1, z + pil / 2 + 0.9, z + span - pil / 2 - 0.9, 1.0, 6.6, 3, 9);
     }
-    for (const e of entrances.filter((ee) => ee.name === 'Gym Doors')) {
-      // window over the door and a bronze canopy, measured on the photo
-      const [ww, wy0, wy1] = e.win, [ca, cb] = e.can;
-      tall('z', gz1, 1, e.mid - ww / 2, e.mid + ww / 2, wy0, wy1, 4, 7);
+    for (const e of entrances.filter((ee) => ee.can)) {
+      const [ca, cb] = e.can;
       B.get('satin').box(e.mid + ca, 2.5, gz1 + SK, e.mid + cb, 2.92, gz1 + SK + 1.4, bronzeCol);
       world.add(e.mid + ca, 2.5, gz1 + SK, e.mid + cb, 2.92, gz1 + SK + 1.4, 6);
     }

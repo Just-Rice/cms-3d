@@ -1,12 +1,5 @@
 [
-  { "name": "front", "free": [[50, 1.7, 104], [47, 4, 70]], "fov": 60 },
-  { "name": "lobby", "p": [43, 0, 62], "yaw": 0, "fp": true },
-  { "name": "commons", "p": [55, 0, 40], "yaw": 1.57, "fp": true },
-  { "name": "c7", "p": [120, 0, 70], "yaw": 0, "fp": true },
-  { "name": "hall700", "p": [208, 0, 40], "yaw": 0, "fp": true },
-  { "name": "hall800", "p": [208, 4.27, 40], "yaw": 0, "fp": true },
-  { "name": "classroom", "p": [127, 0, 3], "yaw": 3.14, "fp": true },
-  { "name": "gym", "p": [14, 0, 96], "yaw": 0, "fp": true, "pitch": 0.1 },
-  { "name": "aud", "p": [62, 0, 46], "yaw": -1.57, "fp": true, "pitch": 0.05 },
-  { "name": "media", "p": [140, 0, 96], "yaw": 1.57, "fp": true }
+  { "name": "start", "p": [47.73, 0, 79.89], "yaw": 0, "pitch": -0.18 },
+  { "name": "gym_in", "p": [20, 0, 85], "yaw": 1.57, "fp": true, "pitch": 0.15 },
+  { "name": "gym_s", "free": [[14, 1.7, 116], [14, 4, 100]], "fov": 60 }
 ]
